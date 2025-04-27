@@ -1,0 +1,34 @@
+{
+    "name": "filesage-dev-tools",
+    "version": "1.0.0",
+    "description": "Benchmarking and tuning utilities for FileSage (file comparison optimization).",
+    "main": "scripts/",
+    "scripts": {
+      "build": "tsc",
+      "benchmark-text": "ts-node scripts/benchmark_text_files.ts",
+      "benchmark-binary": "ts-node scripts/benchmark_binary_files.ts",
+      "run-all": "bash run_benchmarks.sh"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/yourusername/filesage-dev-tools.git"
+    },
+    "keywords": [
+      "benchmark",
+      "performance",
+      "file-comparison",
+      "typescript",
+      "binary",
+      "text",
+      "nodejs",
+      "csv",
+      "plots"
+    ],
+    "author": "Evagoras Charalambous",
+    "license": "MIT",
+    "devDependencies": {
+      "ts-node": "^10.9.2",
+      "typescript": "^5.8.3"
+    }
+  }
+  
