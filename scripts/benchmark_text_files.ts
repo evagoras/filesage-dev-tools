@@ -1,7 +1,14 @@
 import { performance } from 'perf_hooks'
-import { createHash } from 'crypto'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { bufferCompare, hashCompare } from './utils'
+
+interface TextBenchmarkResult {
+  sizeKB: number
+  string_compare: number
+  buffer_compare: number
+  hash_compare: number
+}
 
 async function generateTextTestFile(filePath: string, sizeInKB: number) {
   const text = 'The quick brown fox jumps over the lazy dog. '
@@ -10,7 +17,7 @@ async function generateTextTestFile(filePath: string, sizeInKB: number) {
   await fs.writeFile(filePath, data.slice(0, sizeInKB * 1024))
 }
 
-async function stringCompare(file1: string, file2: string) {
+async function stringCompare(file1: string, file2: string): Promise<boolean> {
   const [data1, data2] = await Promise.all([
     fs.readFile(file1, 'utf8'),
     fs.readFile(file2, 'utf8')
@@ -18,24 +25,7 @@ async function stringCompare(file1: string, file2: string) {
   return data1 === data2
 }
 
-async function bufferCompare(file1: string, file2: string) {
-  const [buffer1, buffer2] = await Promise.all([
-    fs.readFile(file1),
-    fs.readFile(file2)
-  ])
-  return buffer1.equals(buffer2)
-}
-
-async function hashCompare(file1: string, file2: string) {
-  const hashFile = async (path: string) => {
-    const data = await fs.readFile(path)
-    return createHash('sha256').update(data).digest('hex')
-  }
-  const [hash1, hash2] = await Promise.all([hashFile(file1), hashFile(file2)])
-  return hash1 === hash2
-}
-
-async function benchmark(sizeKB: number) {
+async function benchmark(sizeKB: number): Promise<TextBenchmarkResult> {
   const file1 = path.join(__dirname, `text_bench_1_${sizeKB}.txt`)
   const file2 = path.join(__dirname, `text_bench_2_${sizeKB}.txt`)
 
@@ -70,13 +60,15 @@ async function benchmark(sizeKB: number) {
 
   return {
     sizeKB,
-    ...times
+    string_compare: times['string_compare'],
+    buffer_compare: times['buffer_compare'],
+    hash_compare: times['hash_compare']
   }
 }
 
 async function main() {
-  const sizes = [1, 10, 50, 100, 500, 1000, 5000, 10000] // 1KB to 10MB
-  const results = []
+  const sizes = [1, 10, 50, 100, 500, 1000, 5000, 10000]
+  const results: TextBenchmarkResult[] = []
 
   for (const size of sizes) {
     results.push(await benchmark(size))
