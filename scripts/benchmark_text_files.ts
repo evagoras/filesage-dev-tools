@@ -67,7 +67,7 @@ async function benchmark(sizeKB: number): Promise<TextBenchmarkResult> {
 }
 
 async function main() {
-  const sizes = [1, 10, 50, 100, 500, 1000, 5000]
+  const sizes = [1, 10, 50, 100, 500]
   const results: TextBenchmarkResult[] = []
 
   for (const size of sizes) {

@@ -48,7 +48,7 @@ async function benchmark(sizeKB: number): Promise<BinaryBenchmarkResult> {
 }
 
 async function main() {
-  const sizes = [1, 10, 50, 100, 500, 1000, 5000]
+  const sizes = [1, 10, 50, 100, 500, 1000, 5000, 10000] // Sizes in KB
   const results: BinaryBenchmarkResult[] = []
 
   for (const size of sizes) {

@@ -4,31 +4,37 @@
     "description": "Benchmarking and tuning utilities for FileSage (file comparison optimization).",
     "main": "scripts/",
     "scripts": {
-      "build": "tsc",
-      "benchmark-text": "ts-node scripts/benchmark_text_files.ts",
-      "benchmark-binary": "ts-node scripts/benchmark_binary_files.ts",
-      "run-all": "bash run_benchmarks.sh"
+        "build": "tsc",
+        "bench:text": "npx ts-node scripts/benchmark_text_files.ts",
+        "bench:binary": "npx ts-node scripts/benchmark_binary_files.ts",
+        "bench:url": "npx ts-node scripts/benchmark_local_vs_url.ts",
+        "bench:all": "bash run_benchmarks.sh",
+        "plot": "python3 plots/plot_file_comparison.py",
+        "clean": "rm -rf benchmarks/*.csv plots/*.png temp/*"
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/yourusername/filesage-dev-tools.git"
+        "type": "git",
+        "url": "https://github.com/yourusername/filesage-dev-tools.git"
     },
     "keywords": [
-      "benchmark",
-      "performance",
-      "file-comparison",
-      "typescript",
-      "binary",
-      "text",
-      "nodejs",
-      "csv",
-      "plots"
+        "benchmark",
+        "performance",
+        "file-comparison",
+        "typescript",
+        "binary",
+        "text",
+        "nodejs",
+        "csv",
+        "plots"
     ],
     "author": "Evagoras Charalambous",
     "license": "MIT",
     "devDependencies": {
-      "ts-node": "^10.9.2",
-      "typescript": "^5.8.3"
+        "@types/axios": "^0.14.4",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    },
+    "dependencies": {
+        "axios": "^1.9.0"
     }
-  }
-  
+}
