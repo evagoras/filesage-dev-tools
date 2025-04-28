@@ -1,5 +1,8 @@
+// File: scripts/benchmark_binary_files.ts
+
 import { performance } from 'perf_hooks'
-import { promises as fs } from 'fs'
+import * as fs from 'fs'
+import { promises as fsPromises } from 'fs'
 import path from 'path'
 import { bufferCompare, hashCompare } from './utils'
 
@@ -11,7 +14,7 @@ interface BinaryBenchmarkResult {
 
 async function generateBinaryTestFile(filePath: string, sizeInKB: number) {
   const data = Buffer.alloc(sizeInKB * 1024, Math.floor(Math.random() * 256))
-  await fs.writeFile(filePath, data)
+  await fsPromises.writeFile(filePath, data)
 }
 
 async function benchmark(sizeKB: number): Promise<BinaryBenchmarkResult> {
@@ -19,7 +22,7 @@ async function benchmark(sizeKB: number): Promise<BinaryBenchmarkResult> {
   const file2 = path.join(__dirname, `binary_bench_2_${sizeKB}.dat`)
 
   await generateBinaryTestFile(file1, sizeKB)
-  await fs.copyFile(file1, file2)
+  await fsPromises.copyFile(file1, file2)
 
   const times: Record<string, number> = {}
 
@@ -37,8 +40,8 @@ async function benchmark(sizeKB: number): Promise<BinaryBenchmarkResult> {
     times['hash_compare'] = t1 - t0
   }
 
-  await fs.unlink(file1)
-  await fs.unlink(file2)
+  await fsPromises.unlink(file1)
+  await fsPromises.unlink(file2)
 
   return {
     sizeKB,
@@ -48,6 +51,10 @@ async function benchmark(sizeKB: number): Promise<BinaryBenchmarkResult> {
 }
 
 async function main() {
+  const projectRoot = path.resolve(__dirname, '..')
+  const benchmarksDir = path.join(projectRoot, 'benchmarks')
+  await fsPromises.mkdir(benchmarksDir, { recursive: true })
+
   const sizes = [1, 10, 50, 100, 500, 1000, 5000, 10000] // Sizes in KB
   const results: BinaryBenchmarkResult[] = []
 
@@ -56,15 +63,19 @@ async function main() {
   }
 
   const today = new Date().toISOString().slice(0,10).replace(/-/g, '_')
-  const csvPath = path.join(__dirname, `../benchmarks/binary_file_benchmark_${today}.csv`)
+  const fileName = `binary_file_benchmark_${today}.csv`
+  const csvPath = path.join(benchmarksDir, fileName)
 
   const csvLines = ['size_kb,buffer_time_ms,hash_time_ms']
   for (const result of results) {
     csvLines.push(`${result.sizeKB},${result.buffer_compare},${result.hash_compare}`)
   }
 
-  await fs.writeFile(csvPath, csvLines.join('\n'))
+  await fsPromises.writeFile(csvPath, csvLines.join('\n'))
   console.log(`✅ Binary benchmark saved to ${csvPath}`)
 }
 
-main()
+main().catch(err => {
+  console.error(err)
+  process.exit(1)
+})
