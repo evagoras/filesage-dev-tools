@@ -1,5 +1,4 @@
-// File: scripts/benchmark_binary_files.ts
-
+import { checkNodeVersion } from './utils'
 import { performance } from 'perf_hooks'
 import * as fs from 'fs'
 import { promises as fsPromises } from 'fs'
@@ -51,11 +50,12 @@ async function benchmark(sizeKB: number): Promise<BinaryBenchmarkResult> {
 }
 
 async function main() {
+  await checkNodeVersion()
   const projectRoot = path.resolve(__dirname, '..')
   const benchmarksDir = path.join(projectRoot, 'benchmarks')
   await fsPromises.mkdir(benchmarksDir, { recursive: true })
 
-  const sizes = [1, 10, 50, 100, 500, 1000, 5000, 10000] // Sizes in KB
+  const sizes = [1, 10, 50, 100, 500, 1000, 5000, 10000, 20000] // Sizes in KB
   const results: BinaryBenchmarkResult[] = []
 
   for (const size of sizes) {
@@ -75,7 +75,7 @@ async function main() {
   console.log(`✅ Binary benchmark saved to ${csvPath}`)
 }
 
-main().catch(err => {
-  console.error(err)
+main().catch(error => {
+  console.error(error)
   process.exit(1)
 })

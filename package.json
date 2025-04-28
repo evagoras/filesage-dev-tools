@@ -8,8 +8,13 @@
         "bench:text": "npx ts-node scripts/benchmark_text_files.ts",
         "bench:binary": "npx ts-node scripts/benchmark_binary_files.ts",
         "bench:url": "npx ts-node scripts/benchmark_local_vs_url.ts",
+        "bench:urlhead": "npx ts-node scripts/benchmark_local_vs_url_head.ts",
+        "plot": "npx ts-node scripts/generate_plots.ts",
         "bench:all": "bash run_benchmarks.sh",
         "clean": "rm -rf benchmarks/*.csv plots/*.png temp/*"
+    },
+    "engines": {
+        "node": ">=22.0.0"
     },
     "repository": {
         "type": "git",

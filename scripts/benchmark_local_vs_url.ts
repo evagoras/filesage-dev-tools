@@ -1,5 +1,4 @@
-// File: scripts/benchmark_local_vs_url.ts
-
+import { checkNodeVersion } from './utils'
 import axios from 'axios'
 import * as fs from 'fs'
 import { promises as fsp } from 'fs'
@@ -54,6 +53,7 @@ async function benchmarkLocalVsUrl(localPath: string, remoteUrl: string): Promis
 }
 
 async function main() {
+  await checkNodeVersion()
   const benchmarksDir = path.join(__dirname, '../benchmarks')
   await fsp.mkdir(benchmarksDir, { recursive: true })
 
@@ -65,6 +65,10 @@ async function main() {
     {
       local: path.join(__dirname, '../assets/sample2.jpg'),
       url: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Wp-w4-big.jpg'
+    },
+    {
+      local: path.join(__dirname, '../assets/sample3.png'),
+      url: 'https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2@2x.png'
     }
   ]
 
@@ -88,7 +92,7 @@ async function main() {
   console.log(`✅ Local vs URL benchmark saved to ${csvPath}`)
 }
 
-main().catch(err => {
-  console.error(err)
-  process.exit(1)
-})
+main().catch(error => {
+    console.error(error)
+    process.exit(1)
+  })

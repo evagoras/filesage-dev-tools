@@ -1,3 +1,4 @@
+import { checkNodeVersion } from './utils'
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
 import { ChartConfiguration } from 'chart.js'
 import * as fs from 'fs'
@@ -95,7 +96,7 @@ async function plotLocalVsUrlFiles(data: any[]) {
       ],
     },
     options: {
-      plugins: { title: { display: true, text: 'Performance on Local vs URL Files' } },
+      plugins: { title: { display: true, text: 'Performance on Local vs URL Files (Full Download)' } },
       scales: {
         x: { title: { display: true, text: 'File Size (KB)' } },
         y: { title: { display: true, text: 'Time (ms)' } },
@@ -107,7 +108,38 @@ async function plotLocalVsUrlFiles(data: any[]) {
   await fsp.writeFile(`plots/local_vs_url_comparison_${today}.png`, buffer)
 }
 
+async function plotLocalVsUrlHeadFiles(data: any[]) {
+  const sizeKB = data.map(d => Number(d.local_size_kb))
+  const headTime = data.map(d => Number(d.head_check_time_ms))
+  const bufferTime = data.map(d => Number(d.full_buffer_time_ms))
+  const hashTime = data.map(d => Number(d.full_hash_time_ms))
+
+  const config: ChartConfiguration<'line'> = {
+    type: 'line',
+    data: {
+      labels: sizeKB,
+      datasets: [
+        { label: 'HEAD Check Only', data: headTime, fill: false, borderColor: 'purple', backgroundColor: 'purple' },
+        { label: 'Full Buffer Compare', data: bufferTime, fill: false, borderColor: 'green', backgroundColor: 'green' },
+        { label: 'Full Hash Compare', data: hashTime, fill: false, borderColor: 'red', backgroundColor: 'red' },
+      ],
+    },
+    options: {
+      plugins: { title: { display: true, text: 'Performance on Local vs URL Files (HEAD Check)' } },
+      scales: {
+        x: { title: { display: true, text: 'File Size (KB)' } },
+        y: { title: { display: true, text: 'Time (ms)' } },
+      },
+    },
+  }
+
+  const buffer = await chartJSNodeCanvas.renderToBuffer(config)
+  await fsp.writeFile(`plots/local_vs_url_head_comparison_${today}.png`, buffer)
+}
+
 async function main() {
+  await checkNodeVersion()
+
   const benchmarksPath = path.join(__dirname, '../benchmarks')
 
   const files = await fsp.readdir(benchmarksPath)
@@ -115,6 +147,7 @@ async function main() {
   const textFile = files.find((f: string) => f.startsWith('text_file_benchmark'))
   const binaryFile = files.find((f: string) => f.startsWith('binary_file_benchmark'))
   const localVsUrlFile = files.find((f: string) => f.startsWith('local_vs_url_benchmark'))
+  const localVsUrlHeadFile = files.find((f: string) => f.startsWith('local_vs_url_head_benchmark'))
 
   if (textFile) {
     const data = await readCSV(path.join(benchmarksPath, textFile))
@@ -130,6 +163,14 @@ async function main() {
     const data = await readCSV(path.join(benchmarksPath, localVsUrlFile))
     await plotLocalVsUrlFiles(data)
   }
+
+  if (localVsUrlHeadFile) {
+    const data = await readCSV(path.join(benchmarksPath, localVsUrlHeadFile))
+    await plotLocalVsUrlHeadFiles(data)
+  }
 }
 
-main().catch(console.error)
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})

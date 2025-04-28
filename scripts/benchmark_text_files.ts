@@ -1,3 +1,4 @@
+import { checkNodeVersion } from './utils'
 import { performance } from 'perf_hooks'
 import { promises as fs } from 'fs'
 import path from 'path'
@@ -67,7 +68,8 @@ async function benchmark(sizeKB: number): Promise<TextBenchmarkResult> {
 }
 
 async function main() {
-  const sizes = [1, 10, 50, 100, 500]
+  await checkNodeVersion()
+  const sizes = [1, 10, 50, 100, 500, 1000]
   const results: TextBenchmarkResult[] = []
 
   for (const size of sizes) {
@@ -86,4 +88,7 @@ async function main() {
   console.log(`✅ Text benchmark saved to ${csvPath}`)
 }
 
-main()
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
