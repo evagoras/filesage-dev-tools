@@ -1,7 +1,9 @@
-/node_modules/
-__pycache__/
+node_modules/
+dist/
+benchmarks/
+plots/
+temp/
+
 *.tsbuildinfo
-/benchmarks/*.csv
-/plots/*.png
 *.log
 *.tmp

@@ -1,6 +1,6 @@
 # FileSage Dev Tools
 
-Benchmarking and tuning utilities for FileSage.
+Efficient Benchmarking and Tuning Suite for Text, Binary, and Remote File Comparisons.
 
 ## Features
 
