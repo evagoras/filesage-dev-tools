@@ -33,6 +33,14 @@ This will:
 
 ✅ Results are saved into `/benchmarks/` and `/plots/`.
 
+### Notes on Local vs URL HEAD Check Benchmarks
+
+- For the `bench:urlhead` benchmark, the system first sends a lightweight HTTP HEAD request to the remote URL.
+- It compares the `Content-Length` header of the remote file against the local file size.
+- If the sizes match, it assumes the files are identical and **skips full download and content comparison** for maximum speed.
+- If the sizes differ, it proceeds to download the remote file and performs full buffer and hash comparisons.
+- This provides extremely fast verification for matching files with minimal network usage.
+
 ### 3. Available npm scripts
 
 Command               | What it does
