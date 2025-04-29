@@ -5,20 +5,19 @@
     "main": "scripts/",
     "scripts": {
         "build": "tsc",
-        "bench:text": "npx ts-node scripts/benchmark_text_files.ts",
-        "bench:binary": "npx ts-node scripts/benchmark_binary_files.ts",
-        "bench:url": "npx ts-node scripts/benchmark_local_vs_url.ts",
-        "bench:urlhead": "npx ts-node scripts/benchmark_local_vs_url_head.ts",
-        "plot": "npx ts-node scripts/generate_plots.ts",
-        "bench:all": "bash run_benchmarks.sh",
-        "clean": "rm -rf benchmarks/*.csv plots/*.png temp/*"
+        "bench:text": "ts-node scripts/benchmark_text_methods.ts",
+        "bench:binary": "ts-node scripts/benchmark_binary_methods.ts",
+        "plot": "ts-node scripts/generate_plots.ts",
+        "bench:all": "bash run_everything.sh",
+        "clean": "rm -rf benchmarks/*.csv plots/*.png temp/*",
+        "generate:files": "ts-node scripts/generate_test_files.ts"
     },
     "engines": {
         "node": ">=22.0.0"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/yourusername/filesage-dev-tools.git"
+        "url": "https://github.com/evagoras/filesage-dev-tools.git"
     },
     "keywords": [
         "benchmark",

@@ -25,148 +25,101 @@ async function readCSV(filepath: string): Promise<any[]> {
   })
 }
 
-async function plotTextFiles(data: any[]) {
-  const sizeKB = data.map(d => Number(d.size_kb))
-  const stringTime = data.map(d => Number(d.string_time_ms))
-  const bufferTime = data.map(d => Number(d.buffer_time_ms))
-  const hashTime = data.map(d => Number(d.hash_time_ms))
+function groupDataByMethod(data: any[]): Record<string, { sizeKB: number; timeMs: number }[]> {
+  const grouped: Record<string, { sizeKB: number; timeMs: number }[]> = {}
 
-  const config: ChartConfiguration<'line'> = {
-    type: 'line',
-    data: {
-      labels: sizeKB,
-      datasets: [
-        { label: 'String Compare', data: stringTime, fill: false, borderColor: 'blue', backgroundColor: 'blue' },
-        { label: 'Buffer Compare', data: bufferTime, fill: false, borderColor: 'green', backgroundColor: 'green' },
-        { label: 'Hash Compare', data: hashTime, fill: false, borderColor: 'red', backgroundColor: 'red' },
-      ],
-    },
-    options: {
-      plugins: { title: { display: true, text: 'Performance on Text Files' } },
-      scales: {
-        x: { title: { display: true, text: 'File Size (KB)' } },
-        y: { title: { display: true, text: 'Time (ms)' } },
-      },
-    },
+  for (const entry of data) {
+    const method = entry.method
+    const sizeKB = Number(entry.size_kb)
+    const timeMs = Number(entry.time_ms)
+
+    if (!grouped[method]) {
+      grouped[method] = []
+    }
+
+    grouped[method].push({ sizeKB, timeMs })
   }
 
-  const buffer = await chartJSNodeCanvas.renderToBuffer(config)
-  await fsp.writeFile(`plots/text_files_comparison_${today}.png`, buffer)
+  return grouped
 }
 
-async function plotBinaryFiles(data: any[]) {
-  const sizeKB = data.map(d => Number(d.size_kb))
-  const bufferTime = data.map(d => Number(d.buffer_time_ms))
-  const hashTime = data.map(d => Number(d.hash_time_ms))
+async function plotBenchmark(data: any[], title: string, outputFilename: string) {
+  const grouped = groupDataByMethod(data)
+
+  const sizeLabels = [...new Set(data.map(d => Number(d.size_kb)))].sort((a, b) => a - b)
+
+  const datasets = Object.entries(grouped).map(([method, entries]) => {
+    const timeSeries = sizeLabels.map(size => {
+      const found = entries.find(e => e.sizeKB === size)
+      return found ? found.timeMs : null
+    })
+
+    return {
+      label: method,
+      data: timeSeries,
+      fill: false,
+      borderColor: getColorForMethod(method),
+      backgroundColor: getColorForMethod(method)
+    }
+  })
 
   const config: ChartConfiguration<'line'> = {
     type: 'line',
     data: {
-      labels: sizeKB,
-      datasets: [
-        { label: 'Buffer Compare', data: bufferTime, fill: false, borderColor: 'green', backgroundColor: 'green' },
-        { label: 'Hash Compare', data: hashTime, fill: false, borderColor: 'red', backgroundColor: 'red' },
-      ],
+      labels: sizeLabels,
+      datasets
     },
     options: {
-      plugins: { title: { display: true, text: 'Performance on Binary Files' } },
+      plugins: { title: { display: true, text: title } },
       scales: {
         x: { title: { display: true, text: 'File Size (KB)' } },
-        y: { title: { display: true, text: 'Time (ms)' } },
-      },
-    },
+        y: { title: { display: true, text: 'Time (ms)' } }
+      }
+    }
   }
 
   const buffer = await chartJSNodeCanvas.renderToBuffer(config)
-  await fsp.writeFile(`plots/binary_files_comparison_${today}.png`, buffer)
+  await fsp.mkdir('plots', { recursive: true })
+  await fsp.writeFile(`plots/${outputFilename}_${today}.png`, buffer)
 }
 
-async function plotLocalVsUrlFiles(data: any[]) {
-  const sizeKB = data.map(d => Number(d.size_kb))
-  const bufferTime = data.map(d => Number(d.buffer_time_ms))
-  const hashTime = data.map(d => Number(d.hash_time_ms))
-
-  const config: ChartConfiguration<'line'> = {
-    type: 'line',
-    data: {
-      labels: sizeKB,
-      datasets: [
-        { label: 'Buffer Compare', data: bufferTime, fill: false, borderColor: 'green', backgroundColor: 'green' },
-        { label: 'Hash Compare', data: hashTime, fill: false, borderColor: 'red', backgroundColor: 'red' },
-      ],
-    },
-    options: {
-      plugins: { title: { display: true, text: 'Performance on Local vs URL Files (Full Download)' } },
-      scales: {
-        x: { title: { display: true, text: 'File Size (KB)' } },
-        y: { title: { display: true, text: 'Time (ms)' } },
-      },
-    },
+function getColorForMethod(method: string): string {
+  const map: Record<string, string> = {
+    'string-compare': 'blue',
+    'buffer-compare': 'green',
+    'hash-compare': 'red',
+    'etag': 'purple',
+    'content-length': 'orange',
+    'partial-hash': 'teal',
+    'stream-hash': 'brown',
+    'stream-buffer-compare': 'magenta',
+    'download-buffer': 'cyan',
+    'download-hash': 'pink'
   }
-
-  const buffer = await chartJSNodeCanvas.renderToBuffer(config)
-  await fsp.writeFile(`plots/local_vs_url_comparison_${today}.png`, buffer)
-}
-
-async function plotLocalVsUrlHeadFiles(data: any[]) {
-  const sizeKB = data.map(d => Number(d.local_size_kb))
-  const headTime = data.map(d => Number(d.head_check_time_ms))
-  const bufferTime = data.map(d => Number(d.full_buffer_time_ms))
-  const hashTime = data.map(d => Number(d.full_hash_time_ms))
-
-  const config: ChartConfiguration<'line'> = {
-    type: 'line',
-    data: {
-      labels: sizeKB,
-      datasets: [
-        { label: 'HEAD Check Only', data: headTime, fill: false, borderColor: 'purple', backgroundColor: 'purple' },
-        { label: 'Full Buffer Compare', data: bufferTime, fill: false, borderColor: 'green', backgroundColor: 'green' },
-        { label: 'Full Hash Compare', data: hashTime, fill: false, borderColor: 'red', backgroundColor: 'red' },
-      ],
-    },
-    options: {
-      plugins: { title: { display: true, text: 'Performance on Local vs URL Files (HEAD Check)' } },
-      scales: {
-        x: { title: { display: true, text: 'File Size (KB)' } },
-        y: { title: { display: true, text: 'Time (ms)' } },
-      },
-    },
-  }
-
-  const buffer = await chartJSNodeCanvas.renderToBuffer(config)
-  await fsp.writeFile(`plots/local_vs_url_head_comparison_${today}.png`, buffer)
+  return map[method] || 'gray'
 }
 
 async function main() {
   await checkNodeVersion()
 
   const benchmarksPath = path.join(__dirname, '../benchmarks')
-
   const files = await fsp.readdir(benchmarksPath)
 
-  const textFile = files.find((f: string) => f.startsWith('text_file_benchmark'))
-  const binaryFile = files.find((f: string) => f.startsWith('binary_file_benchmark'))
-  const localVsUrlFile = files.find((f: string) => f.startsWith('local_vs_url_benchmark'))
-  const localVsUrlHeadFile = files.find((f: string) => f.startsWith('local_vs_url_head_benchmark'))
+  const textBenchmark = files.find(f => f.startsWith('text_methods_benchmark'))
+  const binaryBenchmark = files.find(f => f.startsWith('binary_methods_benchmark'))
 
-  if (textFile) {
-    const data = await readCSV(path.join(benchmarksPath, textFile))
-    await plotTextFiles(data)
+  if (textBenchmark) {
+    const data = await readCSV(path.join(benchmarksPath, textBenchmark))
+    await plotBenchmark(data, 'Performance on Text Files', 'text_files_comparison')
+  } else {
+    console.warn('⚠️ No text benchmark file found.')
   }
 
-  if (binaryFile) {
-    const data = await readCSV(path.join(benchmarksPath, binaryFile))
-    await plotBinaryFiles(data)
-  }
-
-  if (localVsUrlFile) {
-    const data = await readCSV(path.join(benchmarksPath, localVsUrlFile))
-    await plotLocalVsUrlFiles(data)
-  }
-
-  if (localVsUrlHeadFile) {
-    const data = await readCSV(path.join(benchmarksPath, localVsUrlHeadFile))
-    await plotLocalVsUrlHeadFiles(data)
+  if (binaryBenchmark) {
+    const data = await readCSV(path.join(benchmarksPath, binaryBenchmark))
+    await plotBenchmark(data, 'Performance on Binary Files', 'binary_files_comparison')
+  } else {
+    console.warn('⚠️ No binary benchmark file found.')
   }
 }
 
