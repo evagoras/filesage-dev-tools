@@ -8,9 +8,13 @@
         "bench:text": "ts-node scripts/benchmark_text_methods.ts",
         "bench:binary": "ts-node scripts/benchmark_binary_methods.ts",
         "plot": "ts-node scripts/generate_plots.ts",
-        "bench:all": "bash run_everything.sh",
-        "clean": "rm -rf benchmarks/*.csv plots/*.png temp/*",
-        "generate:files": "ts-node scripts/generate_test_files.ts"
+        "bench:all": "bash run_everything.sh"
+    },
+    "bin": {
+        "filesage-bench-text": "scripts/benchmark_text_methods.ts",
+        "filesage-bench-binary": "scripts/benchmark_binary_methods.ts",
+        "filesage-plot":       "scripts/generate_plots.ts",
+        "filesage-bench-all":  "run_everything.sh"
     },
     "engines": {
         "node": ">=22.0.0"

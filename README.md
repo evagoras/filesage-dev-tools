@@ -45,14 +45,11 @@ This will:
 
 Command               | What it does
 ----------------------|------------------------
-npm run build         | Compile TypeScript files
-npm run bench:text    | Run only Text file benchmarks
-npm run bench:binary  | Run only Binary file benchmarks
-npm run bench:url     | Run only Local vs URL full download benchmarks
-npm run bench:urlhead | Run only Local vs URL HEAD check benchmarks
-npm run plot          | Generate plots only from CSVs
-npm run bench:all     | Run all benchmarks and plots
-npm run clean         | Clean `/benchmarks/`, `/plots/`, `/temp/` folders
+`npm run build`         | Compile TypeScript files
+`npm run bench:text`    | Run only Text file benchmarks
+`npm run bench:binary`  | Run only Binary file benchmarks
+`npm run plot`          | Generate plots only from CSVs
+`npm run bench:all`     | Run all benchmarks and plots
 
 ✅ Use these for partial runs during development.
 

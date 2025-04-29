@@ -37,16 +37,76 @@ interface BenchmarkResult {
 
 const REMOTE_BASE = 'https://raw.githubusercontent.com/evagoras/filesage-dev-tools/main/assets/text/'
 const sizes: SizeInfo[] = [
-  { label: '1KB', sizeKB: 1,    remoteUrl: `${REMOTE_BASE}file_1KB.txt`,   etag: '1b364e5d5c985c7faf03b25982a2f6231e16c0359124f68eebb9517a247884dc', contentLength: 1024 },
-  { label: '10KB', sizeKB: 10,   remoteUrl: `${REMOTE_BASE}file_10KB.txt`,  etag: '38475a5e7431cb27a8bced440486d9075ad3b240bb3e89648a505ac70dd8d88f', contentLength: 1024 * 10 },
-  { label: '50KB', sizeKB: 50,   remoteUrl: `${REMOTE_BASE}file_50KB.txt`,  etag: 'd8da2fae2fb3e223434ee11ea84d3868df8c9b008fd66071788f0381c327af2d', contentLength: 1024 * 50 },
-  { label: '100KB', sizeKB: 100, remoteUrl: `${REMOTE_BASE}file_100KB.txt`, etag: 'b50ed00f6835e2075230ddb7a21364d487d207ff224c1ad41bf300e95983e0df', contentLength: 1024 * 100 },
-  { label: '500KB', sizeKB: 500, remoteUrl: `${REMOTE_BASE}file_500KB.txt`, etag: '293b31baeb66cb61c4cd539ef7fcfeac88092205d28ea6ffe4cf977a755a19aa', contentLength: 1024 * 500 },
-  { label: '1MB', sizeKB: 1024,  remoteUrl: `${REMOTE_BASE}file_1MB.txt`,   etag: '5ddb70a952d4ad438c1f1f738fc1285158d7ce8ac8aef2b0b7ecc182099eb6c9', contentLength: 1024 * 1024 },
-  { label: '5MB', sizeKB: 5*1024, remoteUrl: `${REMOTE_BASE}file_5MB.txt`,  etag: '36291fb743ced5961b3db5cbd9aa010c187992257478438235da3d8625219673', contentLength: 1024 * 1024 * 5 },
-  { label: '10MB', sizeKB: 10*1024, remoteUrl: `${REMOTE_BASE}file_10MB.txt`, etag: '8f2b8cf334298e84e96df92432334a544f263f21125b5c84313acc64a06d240a', contentLength: 1024 * 1024 * 10 },
-  { label: '20MB', sizeKB: 20*1024, remoteUrl: `${REMOTE_BASE}file_20MB.txt`, etag: 'bbf67581f3a14f45fe89b092d5dae3b9d6e4214c6b645607c40e74cf854f95c3', contentLength: 1024 * 1024 * 20 },
-  { label: '50MB', sizeKB: 50*1024, remoteUrl: `${REMOTE_BASE}file_50MB.txt`, etag: '1efe6b3a419c9c07b1f80202bf60f66f36d67d78cb1d7c1ca4e23b7b34ada70b', contentLength: 1024 * 1024 * 50 },
+  {
+    label: '1KB',
+    sizeKB: 1,
+    remoteUrl: `${REMOTE_BASE}file_1KB.txt`,
+    etag: '1b364e5d5c985c7faf03b25982a2f6231e16c0359124f68eebb9517a247884dc',
+    contentLength: 1024
+  },
+  {
+    label: '10KB',
+    sizeKB: 10,
+    remoteUrl: `${REMOTE_BASE}file_10KB.txt`,
+    etag: '38475a5e7431cb27a8bced440486d9075ad3b240bb3e89648a505ac70dd8d88f',
+    contentLength: 1024 * 10
+  },
+  {
+    label: '50KB',
+    sizeKB: 50,
+    remoteUrl: `${REMOTE_BASE}file_50KB.txt`,
+    etag: 'd8da2fae2fb3e223434ee11ea84d3868df8c9b008fd66071788f0381c327af2d',
+    contentLength: 1024 * 50
+  },
+  {
+    label: '100KB',
+    sizeKB: 100,
+    remoteUrl: `${REMOTE_BASE}file_100KB.txt`,
+    etag: 'b50ed00f6835e2075230ddb7a21364d487d207ff224c1ad41bf300e95983e0df',
+    contentLength: 1024 * 100
+  },
+  {
+    label: '500KB',
+    sizeKB: 500,
+    remoteUrl: `${REMOTE_BASE}file_500KB.txt`,
+    etag: '293b31baeb66cb61c4cd539ef7fcfeac88092205d28ea6ffe4cf977a755a19aa',
+    contentLength: 1024 * 500
+  },
+  {
+    label: '1MB',
+    sizeKB: 1024,
+    remoteUrl: `${REMOTE_BASE}file_1MB.txt`,
+    etag: '5ddb70a952d4ad438c1f1f738fc1285158d7ce8ac8aef2b0b7ecc182099eb6c9',
+    contentLength: 1024 * 1024
+  },
+  {
+    label: '5MB',
+    sizeKB: 5 * 1024,
+    remoteUrl: `${REMOTE_BASE}file_5MB.txt`,
+    etag: '36291fb743ced5961b3db5cbd9aa010c187992257478438235da3d8625219673',
+    contentLength: 1024 * 1024 * 5
+  },
+  {
+    label: '10MB',
+    sizeKB: 10 * 1024,
+    remoteUrl: `${REMOTE_BASE}file_10MB.txt`,
+    etag: '8f2b8cf334298e84e96df92432334a544f263f21125b5c84313acc64a06d240a',
+    contentLength: 1024 * 1024 * 10
+  },
+  {
+    label: '20MB',
+    sizeKB: 20 * 1024,
+    remoteUrl: `${REMOTE_BASE}file_20MB.txt`,
+    etag: 'bbf67581f3a14f45fe89b092d5dae3b9d6e4214c6b645607c40e74cf854f95c3',
+    contentLength: 1024 * 1024 * 20
+  },
+  {
+    label: '50MB',
+    sizeKB: 50 * 1024,
+    remoteUrl: `${REMOTE_BASE}file_50MB.txt`,
+    etag: '1efe6b3a419c9c07b1f80202bf60f66f36d67d78cb1d7c1ca4e23b7b34ada70b',
+    contentLength: 1024 * 1024 * 50
+  }
 ]
 
 const LOCAL_BASE = path.resolve(__dirname, '../assets/text')
@@ -84,21 +144,31 @@ async function prepareFiles(): Promise<Map<string,string>> {
 }
 
 /**
- * Benchmark each comparison strategy, including download+stream-compare.
+ * Benchmark each comparison strategy, including optimized ETag check.
  */
 async function benchmark(info: SizeInfo, localPath: string, remotePath: string): Promise<BenchmarkResult[]> {
   const results: BenchmarkResult[] = []
   const { sizeKB, remoteUrl, etag, contentLength } = info
 
-  // ETag: compare remote header ETag
+  // ETag: conditional HEAD with If-None-Match to short-circuit if matched
   results.push({ method: 'etag', sizeKB, timeMs: await measure(async () => {
-    const resp = await axios.head(remoteUrl)
-    const headerRaw = resp.headers['etag'] ?? ''
-    const headerEtag = headerRaw.replace(/^W\//,'').replace(/"/g,'')
-    console.log(`[Remote ETag] ${info.label}: ${headerEtag}`)
-    console.log(`[Expected ETag] ${info.label}: ${etag}`)
-    if (headerEtag !== etag) throw new Error(`ETag mismatch for ${info.label}`)
-  })})
+    const resp = await axios.head(remoteUrl, {
+      headers: { 'If-None-Match': etag, 'Accept-Encoding': 'identity' },
+      // allow 200 OK or 304 Not Modified without throwing
+      validateStatus: status => status === 200 || status === 304
+    })
+    if (resp.status === 304) {
+      console.log(`[ETag Check] ${info.label}: 304 Not Modified`)
+    } else {
+      const headerRaw = resp.headers['etag'] ?? ''
+      const headerEtag = headerRaw.replace(/^W\//, '').replace(/"/g, '')
+      console.log(`[Remote ETag] ${info.label}: ${headerEtag}`)
+      console.log(`[Expected ETag] ${info.label}: ${etag}`)
+      if (headerEtag !== etag) {
+        throw new Error(`ETag mismatch for ${info.label}`)
+      }
+    }
+  }) })
 
   // Content-Length: raw header vs local
   results.push({ method: 'content-length', sizeKB, timeMs: await measure(async () => {
@@ -107,7 +177,7 @@ async function benchmark(info: SizeInfo, localPath: string, remotePath: string):
     const { size: localLen } = await fsp.stat(localPath)
     console.log(`[Remote Len] ${info.label}: ${remoteLen}, [Local Len]: ${localLen}`)
     if (remoteLen !== localLen) throw new Error(`Content-Length mismatch for ${info.label}`)
-  })})
+  }) })
 
   // Partial-hash
   results.push({ method: 'partial-hash', sizeKB, timeMs: await measure(() => partialHashCompare(localPath, remoteUrl)) })
@@ -120,7 +190,7 @@ async function benchmark(info: SizeInfo, localPath: string, remotePath: string):
     // redownload per-run to include network cost
     await downloadRemoteFile(remoteUrl, remotePath)
     await streamBufferCompare(localPath, remotePath)
-  })})
+  }) })
 
   // Download-buffer
   results.push({ method: 'download-buffer', sizeKB, timeMs: await measure(() => downloadBufferCompare(localPath, remoteUrl)) })
